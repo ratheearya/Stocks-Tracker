@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %} HomePage {% endblock title %}
+{% block body %}
+
+    <h1 align="center" class =".modal-title"> Your Stocks </h1>
+    <ul class="list-group list-group-flush" id="stocks">
+        <li class="list-group-item">
+        {% for stock in user.stocks %}
+            <h2>
+            <button style="display: inline-block;" type="button" class="btn-close" onClick="deleteStock({{ stock.id }})">
+                <span aria-hidden="true"></span>
+            </button>
+            {{stock.ticker}} : {{prices[stock.ticker]}}</h2>
+        {% endfor %}
+    </li>
+    </ul>
+
+    <br />
+    <div align = "center">
+    <form method="POST">
+    <input type="text" placeholder="search for stock" name="stock_search" id="stock_search">
+    <button type ="submit"  class="btn btn-secondary"> Search </button>
+    </form>
+    {% if stock_ticker %}
+    <div>
+        <ul class="list-group list-group-flush" id="ticker_searcher">
+            <li class="list-group-item"> <h3> {{stock_ticker}} : {{price}} </h3> </li>
+        </ul>
+    </div>
+    <div>
+        <button class="btn btn-primary" id="addStock" onClick="addStock('{{stock_ticker}}')">Add to List</button>
+    </div>
+    {% endif %}
+    </div>
+
+{% endblock body %}
