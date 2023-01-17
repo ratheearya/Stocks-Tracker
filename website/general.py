@@ -4,7 +4,6 @@ from .db_models import User, Stock
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 import requests
-import yfinance as yf
 import json
 
 mod = Blueprint('general', __name__)
@@ -106,9 +105,22 @@ def delete_stock():
 
 
 def find_price(stock):
-    api_call = yf.Ticker(stock)
-    data = api_call.info
-    if data == None:
+    API_KEY="004481d51de14c829427e8d3730526d0"
+    ticker = stock
+    api=f'&apikey={API_KEY}'
+
+    prefix = 'https://api.twelvedata.com/time_series?'
+    add_on = f'symbol={ticker}'
+    interval = '&interval=1min'
+    link = prefix + add_on + interval + api
+
+    response = requests.get(link)
+    data = response.json()
+
+    if 'code' in data:
         return -1
-    stock_price = data["regularMarketPrice"]
-    return stock_price
+    else:
+        price = data['values'][0]['close']
+        # rounded = round(int(price),2)
+        # return str(rounded)
+        return str(float(price))
